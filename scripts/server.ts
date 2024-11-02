@@ -5,10 +5,11 @@ import { ethOrERC20Deposit, ethOrERC20Deposit2 } from './nativeTokenDeposit'
 import { createERC20Bridge, createERC20Bridge2 } from './createTokenBridge'
 import { l3Configuration } from './l3Configuration'
 import { defaultRunTimeState, RuntimeState } from './runTimeState'
-import { transferOwner } from './transferOwnership'
-import express, { Express, Request, Response } from "express";
-import  bodyParser from 'body-parser';
-import dotenv from "dotenv";
+import { transferOwner, transferOwner2 } from './transferOwnership'
+import express, { Express, Request, Response } from 'express'
+import bodyParser from 'body-parser'
+import dotenv from 'dotenv'
+import { RawContractError } from 'viem'
 // Delay function
 function delay(ms: number) {
   return new Promise(resolve => setTimeout(resolve, ms))
@@ -35,27 +36,32 @@ function checkRuntimeStateIntegrity(rs: RuntimeState) {
   }
 }
 
-async function main(){
-  dotenv.config();
-  const app: Express = express();
-  const port = process.env.PORT || 3000;
+async function main() {
+  dotenv.config()
+  const app: Express = express()
+  const port = process.env.PORT || 3000
   // routes(app);
   app.use(express.json())
-  app.use(bodyParser.urlencoded({ extended: false }));
+  app.use(bodyParser.urlencoded({ extended: false }))
   // app.get("/ping", (req: Request, res: Response) => {
   //   res.send("orbit token bridge setup server");
   // });
 
-  app.post("/setup", async (req: Request, res: Response) => {
-    const body = req.body;
-    console.log("body: ", body);
-    const tokenBridgeInfo = await setup(req.body.key, req.body.l1conn, req.body.l2conn, req.body.config);
-    res.send(tokenBridgeInfo);
+  app.post('/setup', async (req: Request, res: Response) => {
+    const body = req.body
+    console.log('body: ', body)
+    const tokenBridgeInfo = await setup(
+      req.body.key,
+      req.body.l1conn,
+      req.body.l2conn,
+      req.body.config
+    )
+    res.send(tokenBridgeInfo)
   })
 
   app.listen(port, () => {
-    console.log(`[server]: Server is running at http://localhost:${port}`);
-  });
+    console.log(`[server]: Server is running at http://localhost:${port}`)
+  })
 }
 
 export interface SetupConfig {
@@ -64,7 +70,12 @@ export interface SetupConfig {
   l2conn: string
 }
 
-async function setup(privateKey: string, L2_RPC_URL: string, L3_RPC_URL: string, configRaw: string) {
+async function setup(
+  privateKey: string,
+  L2_RPC_URL: string,
+  L3_RPC_URL: string,
+  configRaw: string
+) {
   // Read the environment variables
   // const privateKey = "e21083ba1bb4628ad365e839b4d459b2360ac819aec5f8a5942d82bdb0de5107"
   // const L2_RPC_URL = "https://cool-shy-layer.arbitrum-sepolia.quiknode.pro/1d976d168d29cb416c2ccabccfddfc832294468d/"
@@ -89,7 +100,7 @@ async function setup(privateKey: string, L2_RPC_URL: string, L3_RPC_URL: string,
   const signer = new ethers.Wallet(privateKey).connect(L2Provider)
 
   try {
-    var tokenBridgeInfo;
+    let tokenBridgeInfo
     if (true) {
       ////////////////////////////////////////////
       /// ETH/Native token deposit to L3 /////////
@@ -131,7 +142,13 @@ async function setup(privateKey: string, L2_RPC_URL: string, L3_RPC_URL: string,
       console.log(
         'Running tokenBridgeDeployment or erc20TokenBridge script to deploy token bridge contracts on parent chain and your Orbit chain 🌉🌉🌉🌉🌉'
       )
-      tokenBridgeInfo = await createERC20Bridge2(L2_RPC_URL, privateKey, L3_RPC_URL, config.rollup)
+      tokenBridgeInfo = await createERC20Bridge2(
+        L2_RPC_URL,
+        privateKey,
+        L3_RPC_URL,
+        config.rollup,
+        configRaw
+      )
     }
     ////////////////////////////////
     /// L3 Chain Configuration ///
@@ -141,7 +158,6 @@ async function setup(privateKey: string, L2_RPC_URL: string, L3_RPC_URL: string,
         'Running l3Configuration script to configure your Orbit chain 📝📝📝📝📝'
       )
       await l3Configuration(privateKey, L2_RPC_URL, L3_RPC_URL)
-    
     }
     ////////////////////////////////
     /// Transfering ownership /////
@@ -150,7 +166,7 @@ async function setup(privateKey: string, L2_RPC_URL: string, L3_RPC_URL: string,
       console.log(
         'Transferring ownership on L3, from rollup owner to upgrade executor 🔃🔃🔃'
       )
-      await transferOwner(privateKey, L2Provider, L3Provider)
+      await transferOwner2(privateKey, L2Provider, L3Provider, configRaw)
     }
     return tokenBridgeInfo
   } catch (error) {

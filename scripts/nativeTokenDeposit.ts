@@ -60,7 +60,7 @@ async function sendEthOrDepositERC20(
 async function sendEthOrDepositERC202(
   erc20Inbox: ethers.Contract,
   l2Signer: ethers.Wallet,
-  configRaw: string,
+  configRaw: string
 ) {
   const config = JSON.parse(configRaw)
   const nativeToken = config.nativeToken
@@ -109,11 +109,10 @@ async function sendEthOrDepositERC202(
   }
 }
 
-
 export async function ethOrERC20Deposit2(
   privateKey: string,
   L2_RPC_URL: string,
-  configRaw: string,
+  configRaw: string
 ) {
   if (!privateKey || !L2_RPC_URL) {
     throw new Error('Required environment variable not found')

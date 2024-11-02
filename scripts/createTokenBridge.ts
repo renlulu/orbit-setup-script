@@ -326,7 +326,8 @@ export const createERC20Bridge2 = async (
   baseChainRpc: string,
   baseChainDeployerKey: string,
   childChainRpc: string,
-  rollupAddress: string
+  rollupAddress: string,
+  configRaw: string
 ) => {
   console.log('Creating token bridge for rollup', rollupAddress)
 
@@ -342,14 +343,7 @@ export const createERC20Bridge2 = async (
     JSON.stringify({ l1Network, l2Network }, null, 2)
   )
   console.log(NETWORK_FILE + ' updated')
-
-  // Read the JSON configuration
-  const configRaw = fs.readFileSync(
-    './config/orbitSetupScriptConfig.json',
-    'utf-8'
-  )
   const config: L3Config = JSON.parse(configRaw)
-
   const outputInfo = {
     chainInfo: {
       minL2BaseFee: config.minL2BaseFee,
@@ -397,7 +391,7 @@ export const createERC20Bridge2 = async (
       },
     },
   }
-  return outputInfo;
+  return outputInfo
 }
 
 export const createERC20Bridge = async (
