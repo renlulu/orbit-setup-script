@@ -4,10 +4,14 @@
     "@arbitrum/nitro-contracts": "^1.1.1",
     "@arbitrum/orbit-sdk": "^0.8.0",
     "@arbitrum/token-bridge-contracts": "^1.2.1",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.1",
+    "node-fetch": "^3.3.2",
     "viem": "^1.20.0"
   },
   "devDependencies": {
     "@arbitrum/sdk": "^3.2.0",
+    "@types/express": "^5.0.0",
     "@typescript-eslint/eslint-plugin": "^5.14.0",
     "@typescript-eslint/eslint-plugin-tslint": "^5.27.1",
     "@typescript-eslint/parser": "^5.14.0",
@@ -24,6 +28,7 @@
   },
   "scripts": {
     "setup": "ts-node scripts/setup.ts",
+    "server": "ts-node scripts/server.ts",
     "deposit": "ts-node scripts/chargeEthOrErc20.ts",
     "refund": "ts-node scripts/refundWallets.ts",
     "format": "prettier './**/*.{js,json,md,ts,yml}' '!./src/lib/abi' --write && yarn run lint --fix",
