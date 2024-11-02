@@ -3,7 +3,7 @@ import { L3Config } from './l3ConfigType'
 import fs from 'fs'
 import { ethOrERC20Deposit, ethOrERC20Deposit2 } from './nativeTokenDeposit'
 import { createERC20Bridge, createERC20Bridge2 } from './createTokenBridge'
-import { l3Configuration } from './l3Configuration'
+import { l3Configuration, l3Configuration2 } from './l3Configuration'
 import { defaultRunTimeState, RuntimeState } from './runTimeState'
 import { transferOwner, transferOwner2 } from './transferOwnership'
 import express, { Express, Request, Response } from 'express'
@@ -157,7 +157,7 @@ async function setup(
       console.log(
         'Running l3Configuration script to configure your Orbit chain 📝📝📝📝📝'
       )
-      await l3Configuration(privateKey, L2_RPC_URL, L3_RPC_URL)
+      await l3Configuration2(privateKey, L2_RPC_URL, L3_RPC_URL,configRaw)
     }
     ////////////////////////////////
     /// Transfering ownership /////

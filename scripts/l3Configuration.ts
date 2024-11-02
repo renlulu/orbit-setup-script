@@ -134,7 +134,7 @@ export async function l3Configuration(
   console.log('All things done! Enjoy your Orbit chain. LFG 🚀🚀🚀🚀')
 }
 
-export async function l3Configurations(
+export async function l3Configuration2(
   privateKey: string,
   L2_RPC_URL: string,
   L3_RPC_URL: string,
