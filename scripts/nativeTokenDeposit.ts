@@ -65,7 +65,7 @@ async function sendEthOrDepositERC202(
   const config = JSON.parse(configRaw)
   const nativeToken = config.nativeToken
   if (nativeToken === ethers.constants.AddressZero) {
-    // Send 0.01 ETH if nativeToken is zero address
+    // Send 0.2 ETH if nativeToken is zero address
     const inboxAddress = config.inbox
     const depositEthInterface = new ethers.utils.Interface([
       'function depositEth() public payable',
@@ -77,11 +77,11 @@ async function sendEthOrDepositERC202(
       l2Signer
     )
     const tx = await contract.depositEth({
-      value: ethers.utils.parseEther('0.01'),
+      value: ethers.utils.parseEther('0.2'),
     })
     console.log('Transaction hash on parent chain: ', tx.hash)
     await tx.wait()
-    console.log('0.01 ETHs are deposited to your account')
+    console.log('0.2 ETHs are deposited to your account')
   } else {
     const nativeTokenContract = ERC20__factory.connect(nativeToken, l2Signer)
 
@@ -101,7 +101,7 @@ async function sendEthOrDepositERC202(
     if (decimals !== 18) {
       throw new Error('We currently only support 18 decimals token')
     }
-    const amount = ethers.utils.parseUnits('0.01', decimals)
+    const amount = ethers.utils.parseUnits('0.2', decimals)
     const tx = await erc20Inbox.depositERC20(amount)
     console.log('Transaction hash for depositERC20: ', tx.hash)
     await tx.wait()

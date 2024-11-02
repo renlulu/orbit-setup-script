@@ -106,7 +106,7 @@ async function setup(privateKey: string, L2_RPC_URL: string, L3_RPC_URL: string,
       while (true) {
         depositCheckTime++
         const newBalance = await L3Provider.getBalance(config.chainOwner)
-        if (newBalance.sub(oldBalance).gte(ethers.utils.parseEther('0.01'))) {
+        if (newBalance.sub(oldBalance).gte(ethers.utils.parseEther('0.2'))) {
           console.log(
             'Balance of your account on Orbit chain increased by the native token you have just sent.'
           )
